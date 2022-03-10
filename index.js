@@ -1,5 +1,20 @@
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import Task from './Task.js';
+
+mongoose.promise = global.Promise;
+
+const url = process.env.MONGODBURL;
+try {
+  await mongoose.connect(url, { useNewUrlParser: true });
+} catch (error) {
+  console.error('Error connecting MongoDB');
+}
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
