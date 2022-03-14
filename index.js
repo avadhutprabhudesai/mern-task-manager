@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import Task from './Task.js';
+import taskRouter from './task-router.js';
 
 mongoose.promise = global.Promise;
 
@@ -13,21 +13,13 @@ try {
 } catch (error) {
   console.error('Error connecting MongoDB');
 }
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const app = express();
-
+app.use(express.json());
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// Put all API endpoints under '/api'
-app.get('/api/sample', (req, res) => {
-  // Return them as json
-  res.json({
-    data: 'Hello World express',
-  });
-});
+app.use('/api/tasks', taskRouter);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/client/build/index.html'));
