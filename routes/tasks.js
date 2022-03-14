@@ -1,6 +1,6 @@
 /* eslint-disable @babel/new-cap */
 import express from 'express';
-import Task from './Task.js';
+import Task from '../Task.js';
 
 /**
  * GET: /api/tasks
@@ -14,31 +14,28 @@ const taskRouter = express.Router();
 taskRouter
   .route('/')
   .get((req, res) => {
-    console.log('GET: /api/tasks');
     res.send('GET: /api/tasks');
   })
   .post(async (req, res) => {
-    console.log('POST: /api/tasks');
     const { body } = req;
-    await Task.create({
+    const taskCreated = await Task.create({
       title: body.title,
       isDone: false,
     });
-    res.send('POST: /api/tasks');
+    res.json(taskCreated);
   });
 
 taskRouter
   .route('/:id')
   .get((req, res) => {
-    console.log('GET: /api/tasks/:id', req.params.id);
-    res.send('GET: /api/tasks/:id');
+    res.json({
+      id: Number(req.params.id),
+    });
   })
   .patch((req, res) => {
-    console.log('PATCH: /api/tasks/:id', req.params.id);
-    res.send('PATCH: /api/tasks/:id');
+    res.send(`PATCH: /api/tasks/:${req.params.id}`);
   })
   .delete((req, res) => {
-    console.log('DELETE: /api/tasks/:id', req.params.id);
-    res.send('DELETE: /api/tasks/:id');
+    res.send(`DELETE: /api/tasks/:${req.params.id}`);
   });
 export default taskRouter;
