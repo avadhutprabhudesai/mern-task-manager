@@ -2,7 +2,7 @@ import 'dotenv/config';
 import app from '../server.js';
 import supertest from 'supertest';
 import mongoose from 'mongoose';
-import Task from '../Task.js';
+import Task from '../models/Task.js';
 
 const request = supertest(app);
 
