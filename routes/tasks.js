@@ -1,6 +1,6 @@
 /* eslint-disable @babel/new-cap */
 import express from 'express';
-import Task from '../Task.js';
+import Task from '../models/Task.js';
 
 /**
  * GET: /api/tasks
@@ -16,13 +16,14 @@ taskRouter
   .get((req, res) => {
     res.send('GET: /api/tasks');
   })
-  .post(async (req, res) => {
+  .post(async (req, res, next) => {
     const { body } = req;
-    const taskCreated = await Task.create({
-      title: body.title,
-      isDone: false,
-    });
-    res.json(taskCreated);
+    try {
+      const created = await Task.create(body);
+      res.json(created);
+    } catch (error) {
+      next(error);
+    }
   });
 
 taskRouter
@@ -38,4 +39,21 @@ taskRouter
   .delete((req, res) => {
     res.send(`DELETE: /api/tasks/:${req.params.id}`);
   });
+
+// eslint-disable-next-line no-unused-vars
+taskRouter.use((err, req, res, next) => {
+  if (err.name === 'ValidationError') {
+    const { errors } = err;
+    const errorOutput = {};
+    for (let key of Object.keys(errors)) {
+      if (errors[key].name === 'CastError') {
+        let path = errors[key].path;
+        errorOutput[path] = `Invalid format for ${path}`;
+      } else {
+        errorOutput[key] = errors[key].properties.message;
+      }
+    }
+    res.status(400).json(errorOutput);
+  }
+});
 export default taskRouter;

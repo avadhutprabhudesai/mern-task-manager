@@ -7,6 +7,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "client-start": "cd client && npm start",
+    "client-sb": "cd client && npm run storybook",
     "dev": "concurrently \"npm start\" \"npm run client-start\" ",
     "heroku-postbuild": "cd client && npm install && npm run build",
     "lint-staged": "lint-staged",
